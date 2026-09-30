@@ -1,5 +1,5 @@
 import random
-from domain.models import Heroe, Monstruo
+from src.domain.models import Heroe, Monstruo
 
 class JuegoService:
     def __init__(self, heroe: Heroe):
@@ -18,8 +18,9 @@ class JuegoService:
         return Monstruo(
             nombre=nombre_enemigo,
             vida_maxima=vida_enemigo,
+            vida_actual=vida_enemigo,
             ataque=ataque_enemigo,
-            experiencia_otorgada=nivel_enemigo * 15
+            recompensa_exp=nivel_enemigo * 15
         )
 
     def ejecutar_turno_combate(self, enemigo: Monstruo, accion: str) -> dict:
@@ -29,15 +30,15 @@ class JuegoService:
         """
         resultado = {"mensaje": "", "combate_finalizado": False, "victoria": False}
 
-        if accion == "atacar":
+        if accion in ["1","atacar"]:
             # Turno del Héroe
             daño_heroe = self.heroe.atacar(enemigo)
             resultado["mensaje"] += f"¡Atacaste a {enemigo.nombre} y le causaste {daño_heroe} de daño!\n"
 
             if not enemigo.esta_vivo():
                 resultado["mensaje"] += f"¡Has derrotado a {enemigo.nombre}!\n"
-                self.heroe.ganar_experiencia(enemigo.experiencia_otorgada)
-                resultado["mensaje"] += f"Ganaste {enemigo.experiencia_otorgada} pts de experiencia."
+                self.heroe.ganar_experiencia(enemigo.recompensa_exp)
+                resultado["mensaje"] += f"Ganaste {enemigo.recompensa_exp} pts de experiencia."
                 resultado["combate_finalizado"] = True
                 resultado["victoria"] = True
                 return resultado
@@ -51,7 +52,7 @@ class JuegoService:
                 resultado["combate_finalizado"] = True
                 resultado["victoria"] = False
 
-        elif accion == "huir":
+        elif accion in ["2","huir"]:
             resultado["mensaje"] = "¡Escapaste con éxito del combate!"
             resultado["combate_finalizado"] = True
             resultado["victoria"] = False
