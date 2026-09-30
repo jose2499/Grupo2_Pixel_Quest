@@ -1,8 +1,8 @@
 {
-    "nombre": "kael",
+    "nombre": "invoker",
     "vida_maxima": 100,
-    "vida_actual": 90,
+    "vida_actual": 95,
     "ataque": 15,
     "nivel": 1,
-    "experiencia": 30
+    "experiencia": 15
 }
