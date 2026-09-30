@@ -53,9 +53,10 @@ class Heroe(Personaje):
         self.experiencia: int = 0
         self.inventario: List[Item] = []
 
-    def atacar(self, objetivo: Personaje) -> None:
+    def atacar(self, objetivo: Personaje) -> int:
         """Ataca a otro personaje."""
         objetivo.recibir_dano(self.ataque)
+        return self.ataque
 
     def ganar_experiencia(self, exp: int) -> bool:
         """
@@ -100,6 +101,7 @@ class Monstruo(Personaje):
         super().__init__(nombre, vida_maxima, vida_actual, ataque)
         self.recompensa_exp = recompensa_exp
 
-    def atacar(self, objetivo: Personaje) -> None:
+    def atacar(self, objetivo: Personaje) -> int:
         """Ataca a otro personaje."""
         objetivo.recibir_dano(self.ataque)
+        return self.ataque
