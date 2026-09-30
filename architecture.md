@@ -62,4 +62,4 @@ classDiagram
     DataManager ..> Heroe : serializa
     MenuCLI ..> JuegoService : utiliza
     MenuCLI ..> DataManager : utiliza
-    ´´´
+    ```
