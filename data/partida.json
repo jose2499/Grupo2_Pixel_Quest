@@ -1,0 +1,8 @@
+{
+    "nombre": "kael",
+    "vida_maxima": 100,
+    "vida_actual": 90,
+    "ataque": 15,
+    "nivel": 1,
+    "experiencia": 30
+}

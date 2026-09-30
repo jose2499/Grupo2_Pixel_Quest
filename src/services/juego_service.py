@@ -1,5 +1,5 @@
 import random
-from domain.models import Heroe, Monstruo
+from src.domain.models import Heroe, Monstruo
 
 class JuegoService:
     def __init__(self, heroe: Heroe):
@@ -30,7 +30,7 @@ class JuegoService:
         """
         resultado = {"mensaje": "", "combate_finalizado": False, "victoria": False}
 
-        if accion == "atacar":
+        if accion in ["1","atacar"]:
             # Turno del Héroe
             daño_heroe = self.heroe.atacar(enemigo)
             resultado["mensaje"] += f"¡Atacaste a {enemigo.nombre} y le causaste {daño_heroe} de daño!\n"
@@ -52,7 +52,7 @@ class JuegoService:
                 resultado["combate_finalizado"] = True
                 resultado["victoria"] = False
 
-        elif accion == "huir":
+        elif accion in ["2","huir"]:
             resultado["mensaje"] = "¡Escapaste con éxito del combate!"
             resultado["combate_finalizado"] = True
             resultado["victoria"] = False

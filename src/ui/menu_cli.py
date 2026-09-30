@@ -1,80 +1,76 @@
-import sys
-import os
+from src.domain.models import Heroe
+from src.services.juego_service import JuegoService
+from src.services.data_manager import DataManager
 
-# Aseguramos que Python encuentre los módulos en src
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+def menu_principal():
+    print("========================================")
+    print("       ¡BIENVENIDO A PIXEL QUEST!       ")
+    print("========================================")
+    print("1. Nueva Partida")
+    print("2. Cargar Partida")
+    
+    opcion_inicio = input("Selecciona una opción (1-2): ")
+    heroe = None
 
-from domain.models import Heroe
-from services.juego_service import JuegoService
+    if opcion_inicio == "2":
+        heroe = DataManager.cargar_heroe()
+        if heroe:
+            print(f"\n¡Partida cargada con éxito! Bienvenido de nuevo, {heroe.nombre}.")
+        else:
+            print("\nNo se encontró ninguna partida guardada. Se creará un nuevo héroe.")
 
-class MenuCLI:
-    def __init__(self):
-        self.heroe = None
-        self.juego_service = None
+    if not heroe:
+        nombre = input("\nIngresa el nombre de tu héroe: ")
+        heroe = Heroe(nombre=nombre, vida_maxima=100, vida_actual=100, ataque=15)
+        print(f"\n¡Hola, {heroe.nombre}! Tu aventura comienza ahora.")
 
-    def iniciar_juego(self):
-        print("=== BIENVENIDO A PIXEL QUEST ===")
-        nombre = input("Ingresa el nombre de tu héroe: ").strip()
-        if not nombre:
-            nombre = "Héroe Legendario"
+    juego_service = JuegoService(heroe)
+
+    while True:
+        print("\n--- MENÚ PRINCIPAL ---")
+        print("1. Explorar la Mazmorra")
+        print("2. Ver Estadísticas del Héroe")
+        print("3. Guardar Partida")
+        print("4. Salir")
         
-        # Creación del personaje principal
-        self.heroe = Heroe(nombre=nombre, vida_maxima=100, vida_actual=100, ataque=15)
-        self.juego_service = JuegoService(self.heroe)
-        
-        print(f"\n¡Bienvenido, {self.heroe.nombre}! Tu aventura comienza ahora.\n")
-        self.menu_principal()
+        opcion = input("Selecciona una opción (1-4): ")
 
-    def menu_principal(self):
-        while True:
-            print("\n--- MENÚ PRINCIPAL ---")
-            print("1. Explorar la Mazmorra")
-            print("2. Ver Estadísticas del Héroe")
-            print("3. Salir")
+        if opcion == "1":
+            enemigo = juego_service.explorar()
+            print(f"\n¡Te has encontrado con un {enemigo.nombre}!")
             
-            opcion = input("Selecciona una opción (1-3): ").strip()
-
-            if opcion == "1":
-                self.iniciar_exploracion()
-            elif opcion == "2":
-                self.mostrar_estadisticas()
-            elif opcion == "3":
-                print("\n¡Gracias por jugar a Pixel Quest! Hasta pronto.")
-                break
-            else:
-                print("Opción inválida, intenta de nuevo.")
-
-    def mostrar_estadisticas(self):
-        print("\n--- ESTADÍSTICAS DEL HÉROE ---")
-        print(f"Nombre: {self.heroe.nombre}")
-        print(f"Nivel: {self.heroe.nivel}")
-        print(f"Vida: {self.heroe.vida_actual}/{self.heroe.vida_maxima}")
-        print(f"Ataque: {self.heroe.ataque}")
-        print(f"Experiencia: {self.heroe.experiencia}")
-
-    def iniciar_exploracion(self):
-        monstruo = self.juego_service.explorar()
-        print(f"\n¡Un salvaje {monstruo.nombre} ha aparecido!")
-
-        while monstruo.esta_vivo() and self.heroe.esta_vivo():
-            print(f"\n[{self.heroe.nombre}: {self.heroe.vida_actual} HP] vs [{monstruo.nombre}: {monstruo.vida_actual} HP]")
-            print("1. Atacar")
-            print("2. Huir")
-            
-            accion = input("¿Qué deseas hacer?: ").strip()
-
-            if accion == "1":
-                resultado = self.juego_service.ejecutar_turno_combate(monstruo, "atacar")
+            # Bucle de combate
+            while enemigo.esta_vivo() and heroe.esta_vivo():
+                print(f"\nTu Vida: {heroe.vida_actual}/{heroe.vida_maxima} | Vida del {enemigo.nombre}: {enemigo.vida_actual}/{enemigo.vida_maxima}")
+                print("1. Atacar")
+                print("2. Huir")
+                accion = input("¿Qué deseas hacer?: ")
+                
+                resultado = juego_service.ejecutar_turno_combate(enemigo, accion)
                 print(resultado["mensaje"])
+                
                 if resultado["combate_finalizado"]:
                     break
-            elif accion == "2":
-                resultado = self.juego_service.ejecutar_turno_combate(monstruo, "huir")
-                print(resultado["mensaje"])
+
+            if heroe.vida_actual <= 0:
+                print("\nHas sido derrotado. Fin del juego.")
                 break
+        elif opcion == "2":
+            print(f"\n--- ESTADÍSTICAS DE {heroe.nombre.upper()} ---")
+            print(f"Nivel: {heroe.nivel}")
+            print(f"Vida: {heroe.vida_actual}/{heroe.vida_maxima}")
+            print(f"Ataque: {heroe.ataque}")
+            print(f"Experiencia: {heroe.experiencia}")
+        elif opcion == "3":
+            if DataManager.guardar_heroe(heroe):
+                print("\n¡Partida guardada con éxito en 'data/partida.json'!")
             else:
-                print("Acción no válida.")
+                print("\nHubo un problema al guardar la partida.")
+        elif opcion == "4":
+            print("\n¡Gracias por jugar a Pixel Quest! Hasta pronto.")
+            break
+        else:
+            print("\nOpción no válida. Por favor, intenta de nuevo.")
 
 if __name__ == "__main__":
-    app = MenuCLI()
-    app.iniciar_juego()
+    menu_principal()
