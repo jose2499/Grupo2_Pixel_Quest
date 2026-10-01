@@ -39,9 +39,9 @@ class DataManager:
             heroe = Heroe(
                 nombre=data["nombre"],
                 vida_maxima=data["vida_maxima"],
+                vida_actual=data["vida_actual"],
                 ataque=data["ataque"]
             )
-            heroe.vida_actual = data["vida_actual"]
             heroe.nivel = data.get("nivel", 1)
             heroe.experiencia = data.get("experiencia", 0)
             

@@ -1,8 +1,9 @@
 {
-    "nombre": "invoker",
+    "nombre": "kl",
     "vida_maxima": 100,
-    "vida_actual": 95,
+    "vida_actual": 90,
     "ataque": 15,
     "nivel": 1,
-    "experiencia": 15
+    "experiencia": 15,
+    "inventario": []
 }

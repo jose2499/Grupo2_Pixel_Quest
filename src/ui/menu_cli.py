@@ -63,7 +63,7 @@ def menu_principal():
             print(f"Experiencia: {heroe.experiencia}")
         elif opcion == "3":
             if DataManager.guardar_heroe(heroe):
-                print("\n¡Partida guardada con éxito en 'data/partida.json'!")
+                print(f"\n¡Partida de {heroe.nombre} guardada con éxito!")
             else:
                 print("\nHubo un problema al guardar la partida.")
         elif opcion == "4":
